@@ -1,0 +1,14 @@
+services:
+  lavamusic:
+    image: lavamusic-local
+    pull_policy: never
+    restart: unless-stopped
+
+  radio-proxy:
+    build: ./radio-proxy
+    image: radio-proxy-local
+    container_name: radio-proxy
+    restart: unless-stopped
+    profiles: ["lavalink"]
+    networks:
+      - lavalink
