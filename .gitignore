@@ -546,3 +546,4 @@ docs/.vitepress/cache
 
 # Blakfy FM panel build output
 panel/target/
+lavamusic-data/

@@ -3,6 +3,20 @@ services:
     image: lavamusic-local
     pull_policy: never
     restart: unless-stopped
+    # SQLite instead of embedded PostgreSQL (PGlite): much lighter on RAM.
+    # Data lives in ./lavamusic-data/lavamusic.db (git-ignored).
+    environment:
+      - DATABASE_URL=file:/app/data/lavamusic.db
+    volumes:
+      - ./lavamusic-data:/app/data
+    # RAM cap: ~60-70 MB with SQLite (was ~290 MB with PGlite).
+    mem_limit: 300m
+
+  lavalink:
+    # Java heap was 2 GB (compose.yaml). 512 MB is enough for one server.
+    environment:
+      - _JAVA_OPTIONS=-Xmx512m
+    mem_limit: 900m
 
   radio-proxy:
     build: ./radio-proxy
@@ -12,3 +26,5 @@ services:
     profiles: ["lavalink"]
     networks:
       - lavalink
+    # ~12 MB idle + one ffmpeg (~30 MB) per playing station.
+    mem_limit: 256m
